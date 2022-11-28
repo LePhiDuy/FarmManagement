@@ -1,0 +1,78 @@
+<section class="fixed-top navigation">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" routerLink=""><img src="../../../assets/images/logo1.png" width="80" class="d-inline-block align-middle mr-2" alt="logo"></a>
+      <button class="navbar-toggler " style="border:0 transparent" (click)="toggleCollapse()" type="button" data-toggle="collapse">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <!-- navbar -->
+      <div class="collapse navbar-collapse text-center" [ngClass]="!visible ? 'show':''" id="navbar">
+        <ul class="navbar-nav" style="margin: 0 auto">
+          <li class="nav-item">
+            <a class="nav-link" (click)="HideCollapse()" routerLink=""><i class="fa-solid fa-house-chimney icon-header"></i>Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link page-scroll" (click)="HideCollapse()" href="#feature"><i class="fa-solid fa-gear icon-header"></i>Hệ thống</a>
+          </li>
+          <li class="nav-item dropdown" [hidden]="!isLoggedIn">
+            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fa-solid fa-list-check icon-header"></i>Quản lý</a>
+            <ul class="dropdown-menu">
+              <li>
+                <a routerLink="/animal/list" (click)="HideCollapse()" class="dropdown-item"><i class="fa-solid fa-cow"></i>
+                  <span class="link-name">Quản lý đàn</span>
+                </a>
+              </li>
+              <li [hidden]="['ROLE_ADMIN'].indexOf(role) === -1">
+                <a (click)="HideCollapse()" href="/employee/list" class="dropdown-item"><i class="fa-solid fa-user-group"></i>
+                  <span class="link-name">Quản lý nhân viên</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a (click)="HideCollapse()" class="nav-link page-scroll" href="http://localhost:4200/#team"><i class="fa-solid fa-newspaper icon-header"></i>Tin tức</a>
+          </li>
+          <li class="nav-item">
+            <a (click)="HideCollapse()" class="nav-link" href="#"><i class="fa-solid fa-address-card icon-header"></i>Liên hệ</a>
+          </li>
+          <li class="nav-item">
+            <a (click)="HideCollapse()" routerLink="/authen/login" class="nav-link" [hidden]="isLoggedIn">
+              <i class="fa-solid fa-right-to-bracket icon-header"></i>
+              Đăng nhập
+            </a>
+          </li>
+          <li class="nav-item dropdown" [hidden]="!isLoggedIn">
+            <a (click)="HideCollapse()" class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="fa-solid fa-circle-user"></i>{{username}}</a>
+            <ul class="dropdown-menu">
+              <li>
+                <a (click)="HideCollapse()" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logOutModal">
+                  <i class="fa-solid fa-right-to-bracket icon-header red-color"></i>
+                  Đăng xuất
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</section>
+<!-- /navigation -->
+
+<div class="modal fade" id="logOutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title fs-5 text-danger" id="exampleModalLabel">Xác nhận đăng xuất</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn có chắc chắn muốn đăng xuất ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-success" (click)="logOut()" data-bs-dismiss="modal">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>

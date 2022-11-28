@@ -1,0 +1,308 @@
+<section class="section" style="width: 100%;background-color: #fff">
+  <div class="container-fluid">
+    <div class="table-title">
+      <div class="row">
+        <div class="col-6">
+          <h2>Quản lý cá thể</h2>
+        </div>
+        <div class="col-6">
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createModal">
+            Thêm mới cá thể
+          </button>
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#multipleDeleteModal">
+            Xóa cá thể
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid" style="background-color: #fff">
+    <table class="table table-striped table-hover">
+      <thead>
+      <tr>
+        <th></th>
+        <th>Mã lợn</th>
+        <th>Mã chuồng nuôi</th>
+        <th>Ngày nhập chuồng</th>
+        <th>Ngày xuất chuồng</th>
+        <th>Tình trạng</th>
+        <th>Cân nặng (kg)</th>
+        <th colspan="2">Hành động</th>
+      </tr>
+      </thead>
+      <tbody style="position: relative">
+      <tr *ngFor="let animal of animal.content, index as i">
+        <td>
+							<span class="custom-checkbox">
+<!--                sao value lại = 1 ??-->
+                <!--								<input type="checkbox" id="checkbox" name="options[]" value="1"  (click)="multiDelete(animal.id)">-->
+                <input type="checkbox" id="checkbox" name="options[]" value="{{animal.id}}"
+                       (click)="multiDelete(animal.id)">
+								<label for="checkbox"></label>
+							</span>
+        </td>
+        <td>{{animal.id}}</td>
+        <td>{{animal.cageId}}</td>
+        <td>{{animal.dateIn | date: "dd/MM/yyyy"}}</td>
+        <td>{{animal.dateOut | date: "dd/MM/yyyy"}}</td>
+        <td><span *ngIf="animal.sick == true; else loggedOut">Có bệnh</span>
+          <ng-template #loggedOut>
+            Khỏe mạnh
+          </ng-template>
+        </td>
+        <td>{{animal.weight}}</td>
+        <td>
+          <a href="#editModal" data-bs-target="#editModal" data-bs-toggle="modal" class="edit"
+             (click)="editModal(animal.id)">
+            <i class='fa fa-edit' style='color: #f3da35'></i>
+          </a>
+          <a class="delete" data-bs-toggle="modal" href="#deleteModal" (click)="changeId(animal.id)">
+            <i class="fa-solid fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <div class="clearfix" *ngIf="(animal.numberOfElements > 0); else isEmpty">
+      <!--        Đổi lại tiếng việt, thẻ span-->
+      <div style="font-size: 20px" class="hint-text">Hiển thị <span
+        style="font-weight: bold">{{animal.numberOfElements}}</span> trong số
+        <span style="font-weight: bold">{{animal.totalElements}}</span> vật nuôi
+      </div>
+      <ul class="pagination">
+        <li class="page-item" *ngIf="indexPagination > 0"><a style="font-size: 20px" (click)="firstPage()"
+                                                             class="page-link">Trang đầu</a></li>
+        <li class="page-item" *ngIf="indexPagination > 1"><a style="font-size: 20px" (click)="previousTwoPage()"
+                                                             class="page-link">{{indexPagination - 1}}</a></li>
+        <li class="page-item" *ngIf="indexPagination > 0"><a style="font-size: 20px" (click)="previousPage()"
+                                                             class="page-link">{{indexPagination}}</a></li>
+        <li class="page-item active"><a style="font-size: 20px" class="page-link">{{indexPagination + 1}}</a></li>
+        <li class="page-item" *ngIf="indexPagination + 1 < animal.totalPages"><a style="font-size: 20px"
+                                                                                 (click)="nextPage()"
+                                                                                 class="page-link">{{indexPagination + 2}}</a>
+        </li>
+        <li class="page-item" *ngIf="indexPagination + 2 < animal.totalPages"><a style="font-size: 20px"
+                                                                                 (click)="nextTwoPage()"
+                                                                                 class="page-link">{{indexPagination + 3}}</a>
+        </li>
+        <li class="page-item" *ngIf="indexPagination + 1 < animal.totalPages"><a style="font-size: 20px"
+                                                                                 (click)="lastPage()"
+                                                                                 class="page-link">Trang cuối</a></li>
+      </ul>
+    </div>
+
+    <ng-template #isEmpty class="clearfix">
+      <div style="font-size: 20px" class="hint-text">Danh sách cá thể trống</div>
+    </ng-template>
+
+  </div>
+
+</section>
+
+<!--DELETE MODAL-->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fs-5 text-danger" id="exampleModalLabel">Xóa cá thể</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn chắc chắn muốn xóa cá thể với mã lợn là: {{id}} ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="delete(id)">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--MULTIPLE DELETE MODAL-->
+<div class="modal fade" id="multipleDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title fs-5 text-danger" id="exampleModalLabel2">Xóa nhiều cá thể</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Bạn chắc chắn muốn xóa tất cả cá thể đã chọn ?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="deleteMultiple()">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--CREATE MODAL-->
+<div id="createModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="formCreate" (ngSubmit)="onSubmit()" appFocusInvalidInput #focusInput="focusInvalidInput">
+        <div class="modal-header">
+          <h4 class="modal-title">Thêm mới cá thể</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" class="form-control" formControlName="id">
+          <div class="form-group">
+            <label>Mã chuồng<span class="star"> (*) </span></label>
+            <input type="text" class="form-control" formControlName="cageId">
+            <div
+              *ngIf="formCreate.get('cageId').invalid && (formCreate.get('cageId').touched || formCreate.get('cageId').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formCreate.get('cageId').errors?.required">
+                Mã chuồng không được để trống
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tình trạng<span class="star"> (*) </span></label>
+            <div>
+              <select class="form-control" formControlName="isSick" style="width: 100%; height: 40px">
+                <option [value]=0 >Khỏe mạnh</option>
+                <option [value]=1 >Bị bệnh</option>
+              </select>
+            </div>
+            <div
+              *ngIf="formCreate.get('isSick').invalid && (formCreate.get('isSick').touched || formCreate.get('isSick').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formCreate.get('isSick').errors?.required">
+                Tình trạng không được để trống
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cân nặng<span class="star"> (*) </span></label>
+            <input type="number" class="form-control" formControlName="weight">
+            <div
+              *ngIf="formCreate.get('weight').invalid && (formCreate.get('weight').touched || formCreate.get('weight').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formCreate.get('weight').errors?.required">
+                Cân nặng không được để trống
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ngày nhập chuồng<span class="star"> (*) </span></label>
+            <input type="date" class="form-control" formControlName="dateIn">
+            <div
+              *ngIf="formCreate.get('dateIn').invalid && (formCreate.get('dateIn').touched || formCreate.get('dateIn').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formCreate.get('dateIn').errors?.required">
+                Ngày nhập chuồng không được để trống
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ngày xuất chuồng<span class="star"> (*) </span></label>
+            <input type="date" class="form-control" formControlName="dateOut">
+            <div
+              *ngIf="formCreate.get('dateOut').invalid && (formCreate.get('dateOut').touched || formCreate.get('dateOut').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formCreate.get('dateOut').errors?.required">
+                Ngày xuất chuồng không được để trống
+              </div>
+              <div *ngIf="formCreate.get('dateOut').errors?.dateValidator">
+                Ngày xuất chuồng phải lớn hơn ngày nhập chuồng
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Thoát</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Lưu</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<!--EDIT MODAL-->
+<div id="editModal" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form [formGroup]="formEdit" (ngSubmit)="onSubmitEdit(id)">
+        <div class="modal-header">
+          <h4 class="modal-title">Chỉnh sửa cá thể mã {{id}}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input type="hidden" class="form-control" formControlName="id">
+          </div>
+          <div class="form-group">
+            <label>Mã chuồng<span class="star"> (*) </span></label>
+            <input type="text" class="form-control" formControlName="cageId">
+            <div
+              *ngIf="formEdit.get('cageId').invalid && (formEdit.get('cageId').touched || formEdit.get('cageId').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formEdit.get('cageId').errors?.required">
+                Mã chuồng không được để trống.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tình trạng<span class="star"> (*) </span></label>
+            <select class="form-control" formControlName="isSick" style="width: 100%; height: 40px">
+              <option [value]=0>Khỏe mạnh</option>
+              <option [value]=1>Bị bệnh</option>
+            </select>
+            <div
+              *ngIf="formEdit.get('isSick').invalid && (formEdit.get('isSick').touched || formEdit.get('isSick').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formEdit.get('isSick').errors?.required">
+                Tình trạng không được để trống.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cân nặng<span class="star"> (*) </span></label>
+            <input type="number" class="form-control" formControlName="weight">
+            <div
+              *ngIf="formEdit.get('weight').invalid && (formEdit.get('weight').touched || formEdit.get('weight').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formEdit.get('weight').errors?.required">
+                Cân nặng không được để trống.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ngày nhập chuồng<span class="star"> (*) </span></label>
+            <input type="date" class="form-control" formControlName="dateIn">
+            <div
+              *ngIf="formEdit.get('dateIn').invalid && (formEdit.get('dateIn').touched || formEdit.get('dateIn').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formEdit.get('dateIn').errors?.required">
+                Ngày nhập chuồng không được để trống.
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Ngày xuất chuồng<span class="star"> (*) </span></label>
+            <input type="date" class="form-control" formControlName="dateOut">
+            <div
+              *ngIf="formEdit.get('dateOut').invalid && (formEdit.get('dateOut').touched || formEdit.get('dateOut').dirty)"
+              class="alert alert-danger">
+              <div *ngIf="formEdit.get('dateOut').errors?.required">
+                Ngày xuất chuồng không được để trống.
+              </div>
+              <div *ngIf="formEdit.get('dateOut').errors?.dateValidator">
+                Ngày xuất chuồng phải lớn hơn ngày nhập chuồng
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Thoát</button>
+            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Lưu</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

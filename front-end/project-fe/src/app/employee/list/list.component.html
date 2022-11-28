@@ -1,0 +1,202 @@
+<!--<section class="fixed-top navigation mt-5" style="top: 75px;z-index: 1000">
+  <div class="container-fluid">
+    <div class="table-title">
+      <div class="row">
+        <div class="col-8">
+          <h2><b>Quản lý nhân viên</b></h2>
+        </div>
+        <div class="col-4 mr-0">
+          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleCreateModal">
+            Thêm mới nhân viên
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>-->
+
+<!--kiểm thử-->
+
+<div class="fab-wrapper">
+  <input id="fabCheckbox" type="checkbox" class="fab-checkbox">
+  <a class="fab" for="fabCheckbox" href="https://www.facebook.com/">
+    <i class="fa-solid fa-plus"></i>
+  </a>
+</div>
+
+<!--kiểm th-->
+
+
+
+<section class="section">
+  <div class="container">
+    <div class="main-body">
+
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 gutters-sm">
+        <div class="col mb-4" *ngFor="let employee of employees.content ; index as i">
+          <div class="card card-custom bg-white border-white border-0"  style="height: 600px">
+            <div class="card-custom-img" style="background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB-v__ojYeJHEUO9oFnYxqqa13O2ipbUBgdg&usqp=CAU);"></div>
+            <div class="card-custom-avatar">
+              <img class="img-fluid" [src]="employee.img_url" alt="Avatar" />
+            </div>
+            <div class="card-body" style="">
+              <h4 class="card-title">{{employee.name}}</h4>
+              <p class="card-text" style="font-size: 17px">Mã nhân viên: NV{{employee.id}}
+                <br >
+                Tên tài khoản: {{employee.user.username}}
+                <br>Số CMND: {{employee.identityNumber}}
+                <br>Ngày sinh: {{employee.birthday | date: 'd/M/yyyy'}}
+                <br>
+                <span *ngIf="employee.gender ; else loggedOut">
+              Giới tính: Nữ
+              </span>
+                <ng-template #loggedOut>
+                  Giới tính: Nam
+                </ng-template>
+                <br>Email: {{employee.email}}
+              </p>
+            </div>
+            <div class="card-footer" style="background: inherit; border-color: inherit; text-align: center;font-weight:bolder" >
+              <!--            <a href="#" class="btn btn-outline-success" style="margin-right: 20px">Chỉnh sửa</a>-->
+              <a  class="btn btn-success"  style="margin-right: 20px" type="button" data-bs-toggle="modal" data-bs-target="#exampleCreateModal"
+              >Chỉnh sửa</a>
+              <a  class="btn btn-danger"  type="button" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  (click)="changeId(employee.id, employee.name)">Xóa</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="clearfix" *ngIf="(employees.totalElements> 0); else isEmpty">
+        <div style="font-size: 20px" class="hint-text">Hiển thị <b>{{employees.numberOfElements}}</b> trong số <b>{{employees.totalElements}}</b> nhân viên</div>
+        <ul class="pagination" >
+          <li class="page-item" *ngIf="indexPagination > 0"><a style="font-size: 20px" (click)="firstPage()" class="page-link">Trang đầu</a></li>
+          <li class="page-item" *ngIf="indexPagination > 1"><a style="font-size: 20px"  (click)="previousTwoPage()" class="page-link">{{indexPagination-1}}</a></li>
+          <li class="page-item" *ngIf="indexPagination > 0" ><a style="font-size: 20px" (click)="previousPage()"  class="page-link">{{indexPagination}}</a></li>
+          <li class="page-item active"><a style="font-size: 20px"  class="page-link">{{indexPagination+1}}</a></li>
+          <li class="page-item" *ngIf="indexPagination + 1 < employees.totalPages" ><a style="font-size: 20px" (click)="nextPage()"  class="page-link">{{indexPagination+2}}</a></li>
+          <li class="page-item" *ngIf="indexPagination + 2 < employees.totalPages"><a style="font-size: 20px" (click)="nextTwoPage()" class="page-link">{{indexPagination+3}}</a></li>
+          <li class="page-item" *ngIf="indexPagination + 1 < employees.totalPages"><a style="font-size: 20px" (click)="lastPage()" class="page-link">Trang cuối</a></li>
+        </ul>
+      </div>
+
+      <ng-template #isEmpty class="clearfix">
+        <div style="font-size: 30px" class="hint-text">Danh sách nhân viên trống</div>
+      </ng-template>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- Modal Delete -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title fs-5 text-danger" id="exampleModalLabel">Xác nhận xóa</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="font-size: 17px">
+        Bạn có chắc muốn xóa <br>
+        Nhân viên: {{name}}<br>
+        <small style="color: red">Hành động này không thể hoàn tác</small>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Hủy</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" (click)="delete(id)">Đồng ý</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--&lt;!&ndash;Modal create&ndash;&gt;-->
+<!--<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleCreateModalLabel" aria-hidden="true">-->
+<!--  <div class="modal-dialog">-->
+<!--    <div class="modal-content">-->
+<!--      <div class="modal-header">-->
+<!--        <h1 class="modal-title fs-5" id="exampleCreateModalLabel" style="font-size: 20px">Thêm nhân viên mới</h1>-->
+<!--        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+<!--      </div>-->
+<!--      <div class="modal-body" style="font-size: 17px">-->
+<!--        <form [formGroup]="formCreate" (ngSubmit)="save()">-->
+<!--          <div class="form-group" style="margin-bottom: 10px">-->
+<!--            <input type="number" hidden class="form-control" formControlName="id" required>-->
+<!--          </div>-->
+<!--          <div class="form-group" style="margin-bottom: 10px">-->
+<!--            <label>Tên</label>-->
+<!--            <input type="text" class="form-control" formControlName="name" required>-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['name'].getError('required') != null-->
+<!--                                      && formCreate.controls['name'].touched">-->
+<!--                                      Tên không được để trống</span>-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['name'].getError('maxlength')">-->
+<!--                                      Độ dài không được quá 42 ký tự</span>-->
+
+<!--          </div>-->
+<!--          <fieldset formGroupName="user" [formGroup]="userForm">-->
+<!--            <div class="form-group" style="margin-bottom: 10px">-->
+<!--              <label>Tài khoản:</label>-->
+<!--              <input type="text" class="form-control" formControlName="username" required>-->
+<!--              <span style="color: red" *ngIf="userForm.controls['username'].getError('required') != null-->
+<!--                                              && userForm.controls['username'].touched">-->
+<!--                                              Tên tài khoản không được để trống</span>-->
+<!--              <span style="color: red" *ngIf="userForm.controls['username'].getError('maxlength')-->
+<!--                                              && userForm.controls['username'].getError('minlength')">-->
+<!--                                              Độ dài tên tài khoản phải lớn hơn 5 và nhỏ hơn 24 ký tự</span>-->
+<!--            </div>-->
+<!--            <div class="form-group" style="margin-bottom: 10px">-->
+<!--              <label>Mật khẩu:</label>-->
+<!--              <input type="password" class="form-control" formControlName="password" required>-->
+<!--              <span style="color: red" *ngIf="userForm.controls['password'].getError('required') != null-->
+<!--                                              && userForm.controls['password'].touched">-->
+<!--                                              Mật khẩu không được để trống</span>-->
+<!--              <span style="color: red" *ngIf="userForm.controls['password'].getError('minlength')">-->
+<!--                                              Độ mật khẩu lớn hơn 5 kí tự</span>-->
+<!--            </div>-->
+<!--          </fieldset>-->
+<!--          <div class="form-group" style="margin-bottom: 10px">-->
+<!--            <label>Chứng minh nhân dân:</label>-->
+<!--            <input type="text" class="form-control" formControlName="identityNumber" required>-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['identityNumber'].getError('required') != null-->
+<!--                                      && formCreate.controls['identityNumber'].touched">-->
+<!--                                      Số CMND không được để trống</span>-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['identityNumber'].getError('maxlength')||-->
+<!--                                          formCreate.controls['identityNumber'].getError('minlength')">-->
+<!--                                      Độ dài CMND từ 9 đến 12 ký tự</span>-->
+<!--          </div>-->
+<!--          <div class="form-group" style="margin-bottom: 10px">-->
+<!--            <label>Email</label>-->
+<!--            <input type="email" class="form-control" formControlName="email" required>-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['email'].getError('required') != null-->
+<!--                                      && formCreate.controls['email'].touched">-->
+<!--                                      Email không được để trống</span>-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['email'].getError('email')">-->
+<!--                                      Email có dạng abc.@gmail.com</span>-->
+<!--          </div>-->
+<!--          <div class="form-group" style="margin-bottom: 10px">-->
+<!--            <label>Ngày sinh</label>-->
+<!--            <input type="date" placeholder="dd-mm-yyyy" class="form-control" formControlName="birthday">-->
+<!--          </div>-->
+<!--          <div class="form-group" style="margin-bottom: 10px">-->
+<!--            <label>Hình ảnh</label><br>-->
+<!--            <input type="file" id="img_url" (change)="showPreview($event)" name="image">-->
+<!--            <span style="color: red" *ngIf="formCreate.controls['img_url'].getError('required') != null-->
+<!--                                      && formCreate.controls['img_url'].touched">-->
+<!--                                      Phải thêm hình ảnh</span>-->
+<!--          </div>-->
+<!--          <div class="form-group" style="margin-top: 10px">-->
+<!--            <label>Giới tính:</label>-->
+<!--            <input type="radio" [value]=true name="gender" style="margin: 0px 10px" formControlName="gender">Nam-->
+<!--            <input type="radio" [value]=false name="gender" style="margin: 0px 10px" formControlName="gender">Nữ-->
+<!--          </div>-->
+<!--          <div class="modal-footer">-->
+<!--            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>-->
+<!--            <button type="submit" class="btn btn-success" data-bs-dismiss="modal">Xác nhận</button>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
